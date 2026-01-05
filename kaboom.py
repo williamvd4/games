@@ -1,12 +1,19 @@
 import streamlit as st
 import random
 
-# Initial word list based on the grammar lesson
+# Updated word list to include singular and plural possessives based on the lesson
 WORD_LIST = [
+    # Regular Plurals
     "Desk", "Cup", "Pencil", "Cat", "Book", "Lamp", "Sticker", "Friend", 
     "Game", "Snack", "Rock", "Chair", "Apple", "Shirt", "Pen",
     "Bus", "Box", "Lunch", "Wish", "Fox", "Church", "Brush", 
-    "Beach", "Glass", "Bench", "Dish", "Tax", "Dress", "Flash", "Watch"
+    "Beach", "Glass", "Bench", "Dish", "Tax", "Dress", "Flash", "Watch",
+    # Singular Possessives (One Owner)
+    "The bird's nest", "The baby's toy", "The teacher's desk", "The dog's bone",
+    "The girl's hat", "The cat's tail", "The student's pencil",
+    # Plural Possessives (Many Owners)
+    "The birds' tree", "The students' school", "The babies' room", "The dogs' park",
+    "The girls' team", "The teachers' lounge", "The cats' food"
 ]
 
 def init_game(names_list):
@@ -28,7 +35,7 @@ st.set_page_config(page_title="Digital Noun Kaboom!", layout="wide")
 st.markdown("""
     <style>
     .main-word {
-        font-size: 80px !important;
+        font-size: 60px !important;
         font-weight: 800;
         text-align: center;
         padding: 40px;
@@ -37,20 +44,50 @@ st.markdown("""
         border-radius: 20px;
         border: 4px solid #e2e8f0;
         margin: 20px 0;
+        line-height: 1.2;
     }
     .kaboom-text {
         color: #ef4444 !important;
         animation: blinker 1s linear infinite;
+        font-size: 80px !important;
     }
     @keyframes blinker {
         50% { opacity: 0; }
     }
+    .sidebar-rule {
+        background-color: #f1f5f9;
+        padding: 10px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        font-size: 0.9rem;
+    }
     </style>
+    """, unsafe_allow_html=True)
+
+# Sidebar Grammar Guide
+with st.sidebar:
+    st.header("📖 Grammar Guide")
+    st.markdown("""
+    <div class="sidebar-rule">
+        <b>Singular:</b> Just one (Cat)
+    </div>
+    <div class="sidebar-rule">
+        <b>Plural:</b> More than one (Cats)
+    </div>
+    <div class="sidebar-rule">
+        <b>Singular Possessive:</b> One owner. Add <b>'s</b><br>
+        <i>The cat's toy</i>
+    </div>
+    <div class="sidebar-rule">
+        <b>Plural Possessive:</b> Many owners. Add <b>'</b><br>
+        <i>The cats' toys</i>
+    </div>
     """, unsafe_allow_html=True)
 
 # 1. Setup Phase
 if "game_started" not in st.session_state:
     st.title("💥 Noun Kaboom Setup")
+    st.write("Welcome! This game now includes Singular and Plural Possessives.")
     names_input = st.text_area("Enter student names (one per line):", height=200)
     if st.button("Start Game", use_container_width=True):
         if names_input:
@@ -91,6 +128,7 @@ else:
                     st.session_state.current_student_idx = (idx + 1) % len(students)
                     st.rerun()
             else:
+                st.info("Student: Identify if this is Singular, Plural, Singular Possessive, or Plural Possessive!")
                 c1, c2 = st.columns(2)
                 if c1.button("✅ Correct!", use_container_width=True):
                     current_student["score"] += 1
