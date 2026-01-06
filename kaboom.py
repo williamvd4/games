@@ -1,5 +1,6 @@
 import streamlit as st
 import random
+import streamlit.components.v1 as components
 
 # --- 1. CONFIG & DATA ---
 # Focused exclusively on -s, -es, and -ies spelling rules
@@ -80,10 +81,38 @@ st.markdown("""
     }
     .kaboom-text { color: #ef4444 !important; font-size: 100px !important; font-weight: 900; animation: blinker 0.8s linear infinite; }
     @keyframes blinker { 50% { opacity: 0; } }
+    .shortcut-hint { font-size: 0.8rem; color: #94a3b8; margin-top: 10px; text-align: center; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- 3. APP LOGIC ---
+# --- 3. KEYBOARD SHORTCUTS ENGINE ---
+# This component listens for key presses and clicks the corresponding buttons
+components.html(
+    """
+    <script>
+    const doc = window.parent.document;
+    doc.addEventListener('keydown', function(e) {
+        if (e.code === 'Space') {
+            e.preventDefault();
+            // Try Draw Card first, then Show Answer
+            let drawBtn = Array.from(doc.querySelectorAll('button')).find(el => el.innerText.includes('🎲 Draw a Word'));
+            let showBtn = Array.from(doc.querySelectorAll('button')).find(el => el.innerText.includes('Show Answer'));
+            if (drawBtn) drawBtn.click();
+            else if (showBtn) showBtn.click();
+        } else if (e.key.toLowerCase() === 'c') {
+            let correctBtn = Array.from(doc.querySelectorAll('button')).find(el => el.innerText.includes('✅ Spelled Correctly!'));
+            if (correctBtn) correctBtn.click();
+        } else if (e.key.toLowerCase() === 'w') {
+            let wrongBtn = Array.from(doc.querySelectorAll('button')).find(el => el.innerText.includes('❌ Wrong (Back in pot)'));
+            if (wrongBtn) wrongBtn.click();
+        }
+    });
+    </script>
+    """,
+    height=0,
+)
+
+# --- 4. APP LOGIC ---
 
 # Setup Screen
 if "game_started" not in st.session_state:
@@ -137,6 +166,7 @@ else:
                     if st.button("Show Answer", use_container_width=True):
                         st.session_state.show_answer = True
                         st.rerun()
+                    st.markdown('<div class="shortcut-hint">Press <b>Spacebar</b> to show answer</div>', unsafe_allow_html=True)
                 else:
                     st.markdown(f'<div class="answer-box">{answer}</div>', unsafe_allow_html=True)
                     c1, c2 = st.columns(2)
@@ -154,15 +184,39 @@ else:
                         st.session_state.show_answer = False
                         st.session_state.current_student_idx = (idx + 1) % len(students)
                         st.rerun()
+                    st.markdown('<div class="shortcut-hint">Press <b>C</b> for Correct or <b>W</b> for Wrong</div>', unsafe_allow_html=True)
         else:
             if st.button("🎲 Draw a Word", use_container_width=True):
                 if not st.session_state.pot:
                     st.balloons()
                     st.success("All words finished!")
                 else:
-                    st.session_state.current_task = st.session_state.pot.pop()
+                    # Logic: Cannot get Kaboom if score < 2
+                    found_valid_card = False
+                    temp_discard = []
+                    
+                    while not found_valid_card:
+                        candidate = st.session_state.pot.pop()
+                        
+                        if candidate == "KABOOM!" and current_student["score"] < 2:
+                            temp_discard.append(candidate)
+                            if not st.session_state.pot: # Pot only has KABOOMs left
+                                st.session_state.pot = temp_discard
+                                random.shuffle(st.session_state.pot)
+                                st.warning("Only KABOOMs left, but you are safe! Drawing from reshuffled deck.")
+                                candidate = st.session_state.pot.pop()
+                                found_valid_card = True
+                        else:
+                            found_valid_card = True
+                            st.session_state.current_task = candidate
+                    
+                    # Put the discarded KABOOMs back in the pot for later
+                    st.session_state.pot.extend(temp_discard)
+                    random.shuffle(st.session_state.pot)
+                    
                     st.session_state.show_answer = False
                     st.rerun()
+            st.markdown('<div class="shortcut-hint">Press <b>Spacebar</b> to draw</div>', unsafe_allow_html=True)
 
     with col2:
         st.subheader("📊 Scoreboard")
