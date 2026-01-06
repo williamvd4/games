@@ -104,7 +104,7 @@ components.html(
             let showBtn = Array.from(doc.querySelectorAll('button')).find(el => el.innerText.includes('Show Answer'));
             if (drawBtn) drawBtn.click();
             else if (showBtn) showBtn.click();
-        } else if (e.key.toLowerCase() === 'c') {
+        } else if (e.key.toLowerCase() === 'g') {
             let correctBtn = Array.from(doc.querySelectorAll('button')).find(el => el.innerText.includes('✅ Correct!'));
             if (correctBtn) correctBtn.click();
         } else if (e.key.toLowerCase() === 'w') {
