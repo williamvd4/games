@@ -1,48 +1,51 @@
 import streamlit as st
 import random
 
-# Data structure: (Display Text, Instruction, Correct Answer/Category)
+# --- 1. CONFIG & DATA ---
+# Focused exclusively on -s, -es, and -ies spelling rules
 GAME_DATA = [
-    # Regular Plurals: The student must SPELL these
+    # Add -s
     ("Desk", "Spell the Plural form", "Desks"),
+    ("Cup", "Spell the Plural form", "Cups"),
+    ("Pencil", "Spell the Plural form", "Pencils"),
+    ("Book", "Spell the Plural form", "Books"),
+    ("Lamp", "Spell the Plural form", "Lamps"),
+    ("Sticker", "Spell the Plural form", "Stickers"),
+    ("Friend", "Spell the Plural form", "Friends"),
+    ("Snack", "Spell the Plural form", "Snacks"),
+    # Add -es (s, x, ch, sh)
     ("Bus", "Spell the Plural form", "Buses"),
     ("Box", "Spell the Plural form", "Boxes"),
     ("Lunch", "Spell the Plural form", "Lunches"),
     ("Wish", "Spell the Plural form", "Wishes"),
     ("Fox", "Spell the Plural form", "Foxes"),
     ("Church", "Spell the Plural form", "Churches"),
-    ("Brush", "Spell the Plural form", "Brushes"),
+    ("Brush", "Spell the Plural form", "Bushes"),
     ("Beach", "Spell the Plural form", "Beaches"),
     ("Glass", "Spell the Plural form", "Glasses"),
     ("Tax", "Spell the Plural form", "Taxes"),
     ("Dress", "Spell the Plural form", "Dresses"),
-    ("Flash", "Spell the Plural form", "Flashes"),
     ("Watch", "Spell the Plural form", "Watches"),
-    ("Friend", "Spell the Plural form", "Friends"),
-    ("Snack", "Spell the Plural form", "Snacks"),
-    
-    # Singular Possessives: The student must IDENTIFY these
-    ("The bird's nest", "Identify: Singular or Plural Possessive?", "Singular Possessive"),
-    ("The baby's toy", "Identify: Singular or Plural Possessive?", "Singular Possessive"),
-    ("The teacher's desk", "Identify: Singular or Plural Possessive?", "Singular Possessive"),
-    ("The dog's bone", "Identify: Singular or Plural Possessive?", "Singular Possessive"),
-    ("The student's pencil", "Identify: Singular or Plural Possessive?", "Singular Possessive"),
-    
-    # Plural Possessives: The student must IDENTIFY these
-    ("The birds' tree", "Identify: Singular or Plural Possessive?", "Plural Possessive"),
-    ("The students' school", "Identify: Singular or Plural Possessive?", "Plural Possessive"),
-    ("The babies' room", "Identify: Singular or Plural Possessive?", "Plural Possessive"),
-    ("The dogs' park", "Identify: Singular or Plural Possessive?", "Plural Possessive"),
-    ("The teachers' lounge", "Identify: Singular or Plural Possessive?", "Plural Possessive"),
-    ("The cats' food", "Identify: Singular or Plural Possessive?", "Plural Possessive")
+    # Add -ies (Consonant + y)
+    ("Baby", "Spell the Plural form", "Babies"),
+    ("City", "Spell the Plural form", "Cities"),
+    ("Candy", "Spell the Plural form", "Candies"),
+    ("Puppy", "Spell the Plural form", "Puppies"),
+    ("Party", "Spell the Plural form", "Parties"),
+    ("Story", "Spell the Plural form", "Stories"),
+    ("Family", "Spell the Plural form", "Families"),
+    ("Berry", "Spell the Plural form", "Berries"),
+    ("Penny", "Spell the Plural form", "Pennies"),
+    ("Lady", "Spell the Plural form", "Ladies")
 ]
 
 def init_game(names_list):
+    """Initializes the game state in memory (No Firestore)."""
     st.session_state.students = [
-        {"name": name.strip(), "score": 0, "history": []} 
-        for name in names_list if name.strip()
+        {"name": n.strip(), "score": 0, "history": []} 
+        for n in names_list if n.strip()
     ]
-    # Game "pot" with words and Kaboom sticks
+    # Create the pot: words + 5 KABOOM sticks
     st.session_state.pot = GAME_DATA.copy() + (["KABOOM!"] * 5)
     random.shuffle(st.session_state.pot)
     st.session_state.current_student_idx = 0
@@ -50,9 +53,9 @@ def init_game(names_list):
     st.session_state.show_answer = False
     st.session_state.game_started = True
 
+# --- 2. STYLES ---
 st.set_page_config(page_title="Noun Kaboom", layout="wide")
 
-# Custom CSS for a clean, large UI
 st.markdown("""
     <style>
     .display-box { 
@@ -60,8 +63,8 @@ st.markdown("""
         border: 4px solid #e2e8f0; 
         border-radius: 20px; 
         padding: 40px; 
-        text-align: center;
-        margin: 20px 0;
+        text-align: center; 
+        margin: 20px 0; 
     }
     .main-text { font-size: 70px !important; font-weight: 800; color: #1e293b; }
     .instruction { font-size: 28px !important; color: #64748b; margin-bottom: 10px; font-weight: 600; }
@@ -80,14 +83,21 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
+# --- 3. APP LOGIC ---
+
+# Setup Screen
 if "game_started" not in st.session_state:
-    st.title("💥 Noun Kaboom: Class Edition")
-    st.write("Mix of spelling practice and possessive identification.")
+    st.title("💥 Noun Kaboom: Plural Spelling")
+    st.subheader("Practicing -s, -es, and -ies")
     names_input = st.text_area("Enter student names (one per line):", height=200)
     if st.button("Start Game", use_container_width=True):
         if names_input:
             init_game(names_input.split("\n"))
             st.rerun()
+        else:
+            st.error("Please enter at least one name.")
+
+# Game Screen
 else:
     students = st.session_state.students
     idx = st.session_state.current_student_idx
@@ -104,19 +114,22 @@ else:
             if task == "KABOOM!":
                 st.markdown('<div class="display-box"><div class="kaboom-text">KABOOM! 💥</div></div>', unsafe_allow_html=True)
                 if st.button("Return words & Pass Turn", use_container_width=True):
+                    # Return their collected words to the pot
                     st.session_state.pot.extend(current_student["history"])
                     random.shuffle(st.session_state.pot)
+                    # Reset score
                     current_student["score"] = 0
                     current_student["history"] = []
+                    # Next turn
                     st.session_state.current_task = None
                     st.session_state.current_student_idx = (idx + 1) % len(students)
                     st.rerun()
             else:
-                display_word, instr, answer = task
+                word, instr, answer = task
                 st.markdown(f'''
                     <div class="display-box">
                         <div class="instruction">{instr}</div>
-                        <div class="main-text">{display_word}</div>
+                        <div class="main-text">{word}</div>
                     </div>
                 ''', unsafe_allow_html=True)
                 
@@ -127,7 +140,7 @@ else:
                 else:
                     st.markdown(f'<div class="answer-box">{answer}</div>', unsafe_allow_html=True)
                     c1, c2 = st.columns(2)
-                    if c1.button("✅ Correct!", use_container_width=True):
+                    if c1.button("✅ Spelled Correctly!", use_container_width=True):
                         current_student["score"] += 1
                         current_student["history"].append(task)
                         st.session_state.current_task = None
@@ -142,10 +155,10 @@ else:
                         st.session_state.current_student_idx = (idx + 1) % len(students)
                         st.rerun()
         else:
-            if st.button("🎲 Draw a Card", use_container_width=True):
+            if st.button("🎲 Draw a Word", use_container_width=True):
                 if not st.session_state.pot:
                     st.balloons()
-                    st.success("All cards finished!")
+                    st.success("All words finished!")
                 else:
                     st.session_state.current_task = st.session_state.pot.pop()
                     st.session_state.show_answer = False
@@ -156,9 +169,7 @@ else:
         for i, s in enumerate(students):
             marker = "➡️" if i == idx else " "
             st.write(f"{marker} **{s['name']}**: {s['score']} pts")
-            if i == idx:
-                st.caption(f"Has {len(s['history'])} words in their pile.")
 
-    if st.button("🔄 Reset App"):
+    if st.button("🔄 Reset Entire Game"):
         del st.session_state.game_started
         st.rerun()
