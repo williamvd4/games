@@ -114,6 +114,12 @@
             border: 2px solid #ffeeba;
             background: #fff3cd;
         }
+        /* highlight for incorrect items/containers when Unlock fails */
+        .error-highlight {
+            outline: 3px solid rgba(220,53,69,0.28);
+            background: #fff5f5;
+            border-radius: 8px;
+        }
         .drag-area-flex {
             display: flex;
             gap: 20px;
@@ -235,38 +241,35 @@ function shuffle(array) {
     return array;
 }
 
+// Normalize strings for comparison: convert smart apostrophes, trim, collapse spaces, lowercase
+function normalizeString(s) {
+    return (s || '').replace(/’/g, "'").replace(/\s+/g, ' ').trim().toLowerCase();
+}
+
+// Compact normalization: remove spaces as well (useful for letter-tile assemblies)
+function normalizeCompact(s) {
+    return normalizeString(s).replace(/\s+/g, '');
+}
+
+function clearErrorHighlights() {
+	// remove any previously applied visual error markers
+	document.querySelectorAll('.error-highlight').forEach(el => el.classList.remove('error-highlight'));
+}
+
+function findDraggableByText(text) {
+	// find a .draggable whose normalized text matches the provided text
+	const norm = normalizeString(text);
+	const nodes = document.querySelectorAll('.draggable');
+	for (const n of nodes) {
+		if (normalizeString(n.textContent) === norm) return n;
+	}
+	return null;
+}
+
 const levels = [
     {
-        type: "multiple_choice",
-        title: "🚪 Lock 1: The Principal's Announcement",
-        questions: [
-            {
-                text: "The principal made an announcement:<br><b>___ announcement was heard by the entire school.</b><br>Which label is correct?",
-                choices: ["principals announcement", "principal's announcement", "principals' announcement", "principal announcement"],
-                answer: "principal's announcement"
-            },
-            {
-                text: "The teachers planned a meeting:<br><b>___ meeting is after school.</b><br>Which label is correct?",
-                choices: ["teachers meeting", "teacher's meeting", "teachers' meeting", "teacher meeting"],
-                answer: "teachers' meeting"
-            },
-            {
-                text: "The students' artwork was displayed:<br><b>___ artwork was colorful.</b><br>Which label is correct?",
-                choices: ["students artwork", "student's artwork", "students' artwork", "student artwork"],
-                answer: "students' artwork"
-            },
-            {
-                text: "The child's toy was missing:<br><b>___ toy was found under the table.</b><br>Which label is correct?",
-                choices: ["childs toy", "child's toy", "childs' toy", "child toy"],
-                answer: "child's toy"
-            }
-        ],
-        explanation: "Choose the correct possessive form for each context.",
-        worksheet_task: "Write two more sentences using a singular possessive and a plural possessive. Underline the possessive in each."
-    },
-    {
         type: "sorting_drag",
-        title: "🚪 Lock 2: Sort the Possessives",
+        title: "🚪 Lock 1: Sort the Possessives",
         scene: `Sort these words into the correct grammatical categories by dragging them:<br>
                 `,
         phrases: [
@@ -284,54 +287,27 @@ const levels = [
         explanation: "Singular means one, plural means more than one. Possessive shows ownership with an apostrophe.",
         worksheet_task: "Worksheet #2: Sort the words into the correct grammatical columns."
     },
+
     {
-        type: "reorder_sentences",
-        title: "🚪 Lock 3: Reorder Sentences – Possessive Practice",
-        scene: `Reassemble each sentence by clicking the words in the correct order. Click a word in the sentence box to remove it.`,
-        sentences: [
-            { fragments: ["The", "dog", "barks", "at", "the", "cat"], answer: "The dog barks at the cat" },
-            { fragments: ["The", "children's", "books", "are", "on", "the", "table"], answer: "The children's books are on the table" },
-            { fragments: ["Scientists'", "discoveries", "help", "advance", "our", "understanding", "of", "the", "world"], answer: "Scientists' discoveries help advance our understanding of the world" },
-            { fragments: ["The", "farmer's", "barn", "holds", "the", "horses'", "feed", "and", "the", "children's", "toys"], answer: "The farmer's barn holds the horses' feed and the children's toys" },
-            { fragments: ["The", "artist's", "canvas", "displays", "paintings", "and", "the", "teachers'", "comments", "guide", "students"], answer: "The artist's canvas displays paintings and the teachers' comments guide students" }
+        type: "sorting_drag",
+        title: "🚪 Lock 2: Sort Possessive Forms",
+        scene: `Sort the possessive forms into the correct categories by dragging them.`,
+        phrases: [
+            "dog's", "dogs'", "child's", "children's",
+            "teacher's", "teachers'", "cat's", "cats'"
         ],
-        worksheet_task: "Worksheet #3: For each sentence you assemble, underline the possessive form and explain why it's used.",
-        explanation: "Practice ordering fragments and applying possessive forms correctly."
+        categories: ["Belonging to one", "Belonging to more than one"],
+        answer: {
+            "Belonging to one": ["dog's", "child's", "teacher's", "cat's"],
+            "Belonging to more than one": ["dogs'", "children's", "teachers'", "cats'"]
+        },
+        explanation: "Sort possessive forms based on whether they show ownership by one or more than one.",
+        worksheet_task: "Write two pairs of your own: a singular possessive and a plural possessive, then swap with a partner to check."
     },
-    {
-        type: "reorder_sentences",
-        title: "🚪 Lock 4: Build the Word",
-        scene: `Build the word by clicking the letter tiles in the correct order. Click a tile in the answer box to remove it.`,
-        instructions: [
-            "Make the plural of dog.",
-            "Make the singular possessive of dog.",
-            "Make the plural possessive of cats.",
-            "Make the plural of box.",
-            "Make the plural of baby.",
-            "Make the singular possessive of teacher.",
-            "Make the plural possessive of children.",
-            "Make the plural of cat.",
-            "Make the singular possessive of child.",
-            "Make the plural possessive of teachers."
-        ],
-        sentences: [
-            { fragments: ["d", "o", "g", "s", "es", "ies", "’"], answer: "d o g s" },
-            { fragments: ["d", "o", "g", "s", "es", "ies", "’"], answer: "d o g ’ s" },
-            { fragments: ["c", "a", "t", "s", "es", "ies", "’"], answer: "c a t s ’" },
-            { fragments: ["b", "o", "x", "s", "es", "ies", "’"], answer: "b o x es" },
-            { fragments: ["b", "a", "b", "y", "s", "es", "ies", "’"], answer: "b a b y ies" },
-            { fragments: ["t", "e", "a", "c", "h", "e", "r", "s", "es", "ies", "’"], answer: "t e a c h e r ’ s" },
-            { fragments: ["c", "h", "i", "l", "d", "r", "e", "n", "s", "es", "ies", "’"], answer: "c h i l d r e n ’" },
-            { fragments: ["c", "a", "t", "s", "es", "ies", "’"], answer: "c a t s" },
-            { fragments: ["c", "h", "i", "l", "d", "s", "es", "ies", "’"], answer: "c h i l d ’ s" },
-            { fragments: ["t", "e", "a", "c", "h", "e", "r", "s", "es", "ies", "’"], answer: "t e a c h e r s ’" }
-        ],
-        worksheet_task: "Build a plural possessive word.",
-        explanation: "Practice forming plurals and possessives by adding the correct endings."
-    },
+
     {
         type: "multiple_choice",
-        title: "🚪 Lock 5: Which Is Which?",
+        title: "🚪 Lock 3: Which Is Which?",
         questions: [
             {
                 text: "Which word is the singular noun?",
@@ -384,77 +360,94 @@ const levels = [
                 answer: "children"
             }
         ],
-        explanation: "‘cat’s’, ‘dog’s’, ‘child’s’, ‘teacher’s’ are singular possessive; ‘cats’’, ‘dogs’’, ‘children’s’, ‘teachers’’ are plural possessive.",
+        explanation: "‘cat’s’, ‘dog’s’, ‘child’s’, ‘teacher’s’ are singular possessive; plural forms show more than one.",
         worksheet_task: "Write a list of 3 singular possessive nouns and 3 plural possessive nouns. Draw a picture for one of each."
     },
+
     {
-        type: "fill_blank_drag",
-        title: "🚪 Lock 6: Match the Form",
-        scene: `Click an option to select it, then click a blank to place it. Click an item in a blank to move it back to options.`,
-        blanks: [
-            { sentence: "The toy that belongs to one cat.<br>The ___ toy", answer: "cat" },
-            { sentence: "The toys that belong to many cats.<br>The ___ toys", answer: "cats" },
-            { sentence: "The toy that belongs to the cat.<br>The ___ toy", answer: "cat’s" },
-            { sentence: "The toys that belong to the cats.<br>The ___ toys", answer: "cats’" },
-            { sentence: "The bone that belongs to one dog.<br>The ___ bone", answer: "dog" },
-            { sentence: "The bones that belong to many dogs.<br>The ___ bones", answer: "dogs" },
-            { sentence: "The bone that belongs to the dog.<br>The ___ bone", answer: "dog’s" },
-            { sentence: "The bones that belong to the dogs.<br>The ___ bones", answer: "dogs’" }
+        type: "multiple_choice",
+        title: "🚪 Lock 4: Possessive Forms – Announcement & Possessions",
+        questions: [
+            {
+                text: "The principal made an announcement:<br><b>The ___ announcement was heard by the entire school.</b><br>Which label is correct?",
+                choices: ["principal's", "principals'", "principal", "principals"],
+                answer: "principal's"
+            },
+            {
+                text: "The teachers planned a meeting:<br><b>The ___ meeting is after school.</b><br>Which label is correct?",
+                choices: ["teachers'", "teacher's", "teachers", "teacher"],
+                answer: "teachers'"
+            },
+            {
+                text: "Student artwork was displayed:<br><b>The ___ artwork was colorful.</b><br>Which label is correct?",
+                choices: ["students'", "student's", "students", "student"],
+                answer: "students'"
+            },
+            {
+                text: "A child lost a toy:<br><b>The ___ toy was found under the table.</b><br>Which label is correct?",
+                choices: ["child's", "children's", "child", "children"],
+                answer: "child's"
+            }
         ],
-        options: ["cat", "cats", "cat’s", "cats’", "dog", "dogs", "dog’s", "dogs’"],
-        worksheet_task: "Draw a picture for each sentence.",
-        explanation: "Each form fits a different context: singular, plural, singular possessive, plural possessive for cat and dog."
-    },
-    {
-        type: "sorting_drag",
-        title: "🚪 Lock 7: Sort Possessive Forms",
-        scene: `Sort the possessive forms into the correct categories by dragging them.`,
-        phrases: [
-            "dog's", "dogs'", "child's", "children's",
-            "teacher's", "teachers'", "cat's", "cats'"
-        ],
-        categories: ["Belonging to one", "Belonging to more than one"],
-        answer: {
-            "Belonging to one": ["dog's", "child's", "teacher's", "cat's"],
-            "Belonging to more than one": ["dogs'", "children's", "teachers'", "cats'"]
-        },
-        explanation: "Sort possessive forms based on whether they show ownership by one or more than one.",
-        worksheet_task: "Write two pairs of your own: a singular possessive and a plural possessive, then swap with a partner to check."
+        explanation: "Choose the correct possessive form for each context.",
+        worksheet_task: "Write two more sentences using a singular possessive and a plural possessive. Underline the possessive in each."
     },
     {
         type: "reorder_sentences",
-        title: "🚪 Lock 8: Build the Word",
+        title: "🚪 Lock 5: Reorder Sentences – Possessive Practice",
+        scene: `Reassemble each sentence by clicking the words in the correct order. Click a word in the sentence box to remove it.`,
+        sentences: [
+            { fragments: ["The", "dog", "barks", "at", "the", "cat"], answer: "The dog barks at the cat" },
+            { fragments: ["The", "children's", "books", "are", "on", "the", "table"], answer: "The children's books are on the table" },
+            { fragments: ["Scientists'", "discoveries", "help", "us"], answer: "Scientists' discoveries help us" },
+            { fragments: ["The", "farmer's", "barn", "holds", "the", "horses'", "feed"], answer: "The farmer's barn holds the horses' feed" },
+            { fragments: ["The", "teachers'", "comments", "guide", "students"], answer: "The teachers' comments guide students" }
+        ],
+        worksheet_task: "Worksheet #3: For each sentence you assemble, underline the possessive form and explain why it's used.",
+        explanation: "Practice ordering fragments and applying possessive forms correctly."
+    },
+    {
+        type: "reorder_sentences",
+        title: "🚪 Lock 6: Build the Word",
         scene: `Build the word by clicking the letter tiles in the correct order. Click a tile in the answer box to remove it.`,
         instructions: [
             "Make the plural of dog.",
-            "Make the singular possessive of dog.",
-            "Make the plural possessive of cats.",
+            "Make the singular possessive of child.",
             "Make the plural of box.",
             "Make the plural of baby.",
-            "Make the singular possessive of teacher.",
-            "Make the plural possessive of children.",
-            "Make the plural of cat.",
-            "Make the singular possessive of child.",
-            "Make the plural possessive of teachers."
+            "Make the plural possessive of teacher."
         ],
         sentences: [
-            { fragments: ["d", "o", "g", "s", "es", "ies", "’"], answer: "d o g s" },
-            { fragments: ["d", "o", "g", "s", "es", "ies", "’"], answer: "d o g ’ s" },
-            { fragments: ["c", "a", "t", "s", "es", "ies", "’"], answer: "c a t s ’" },
-            { fragments: ["b", "o", "x", "s", "es", "ies", "’"], answer: "b o x es" },
-            { fragments: ["b", "a", "b", "y", "s", "es", "ies", "’"], answer: "b a b y ies" },
-            { fragments: ["t", "e", "a", "c", "h", "e", "r", "s", "es", "ies", "’"], answer: "t e a c h e r ’ s" },
-            { fragments: ["c", "h", "i", "l", "d", "r", "e", "n", "s", "es", "ies", "’"], answer: "c h i l d r e n ’" },
-            { fragments: ["c", "a", "t", "s", "es", "ies", "’"], answer: "c a t s" },
-            { fragments: ["c", "h", "i", "l", "d", "s", "es", "ies", "’"], answer: "c h i l d ’ s" },
-            { fragments: ["t", "e", "a", "c", "h", "e", "r", "s", "es", "ies", "’"], answer: "t e a c h e r s ’" }
+            { fragments: ["d","o","g","s","es","ies","’"], answer: "dogs" },
+            { fragments: ["c","h","i","l","d","s","es","ies","’"], answer: "child's" },
+            { fragments: ["b","o","x","s","es","ies","’"], answer: "boxes" },
+            { fragments: ["b","a","b","y","s","es","ies","’"], answer: "babies" },
+            { fragments: ["t","e","a","c","h","e","r","s","es","ies","’"], answer: "teachers'" }
         ],
-        worksheet_task: "Build a plural possessive word.",
-        explanation: "Practice forming plurals and possessives by adding the correct endings."
+        worksheet_task: "Build a plural or possessive form from letter tiles.",
+        explanation: "Practice forming plurals and possessives using letter and ending tiles."
+    },
+    {
+        type: "fill_blank_drag",
+        title: "🚪 Lock 7: Match the Form",
+        scene: `Click an option to select it, then click a blank to place it. Click an item in a blank to move it back to options.`,
+        blanks: [
+            { sentence: "The toy that belongs to one cat.<br>The ___ toy", answer: "cat's" },
+            { sentence: "The toys that belong to many cats.<br>The ___ toys", answer: "cats'" },
+            { sentence: "The blackboard that belongs to the teacher.<br>The ___ blackboard", answer: "teacher's" },
+            { sentence: "The classrooms that belong to many teachers.<br>The ___ classrooms", answer: "teachers'" },
+            { sentence: "The door that belongs to one house.<br>The ___ door", answer: "house's" },
+            { sentence: "The doors that belong to many houses.<br>The ___ doors", answer: "houses'" },
+            { sentence: "The book that belongs to the child.<br>The ___ book", answer: "child's" },
+            { sentence: "The books that belong to more than one child.<br>The ___ books", answer: "children's" }
+        ],
+        options: ["cat's", "cats'", "teacher's", "teachers'", "house's", "houses'", "child's", "children's"],
+        worksheet_task: "Draw a picture for each sentence and label the form (singular possessive, plural possessive).",
+        explanation: "Each blank uses a possessive form (apostrophe) to show ownership across different nouns."
     },
     {
         type: "multiple_choice",
-        title: "🚪 Lock 9: Choose the Right Form",
+        title: "🚪 Lock 8: Choose the Right Form",
         questions: [
             {
                 text: "Which word means ‘belonging to more than one girl’?",
@@ -502,7 +495,7 @@ const levels = [
     },
     {
         type: "sorting_drag",
-        title: "🚪 Lock 10: Sentence Sort",
+        title: "🚪 Lock 9: Sentence Sort",
         scene: `Sort each sentence by the type of noun it uses.`,
         phrases: [
             "The dog runs.",
@@ -671,7 +664,7 @@ function renderLevel() {
         // Initialize dragState for each blank and origin
         dragState['origin'] = shuffle(level.options.slice());
         
-        // FIXED: Handle missing initial values correctly preventing undefined items
+        // FIXED: Handle missing initial values to prevent undefined items
         level.blanks.forEach((b, i) => {
             if (b.initial) {
                 dragState['blank-' + i] = [b.initial];
@@ -707,39 +700,88 @@ function renderLevel() {
 }
 
 function checkMC() {
+    clearErrorHighlights();
     const level = levels[currentLevel];
     let allCorrect = true;
+    const wrongQuestions = [];
     level.questions.forEach((q, qIdx) => {
         const radios = document.getElementsByName(`mc-${qIdx}`);
         let selected = '';
-        for (const radio of radios) {
-            if (radio.checked) selected = radio.value;
+        let selectedIndex = -1;
+        for (let i = 0; i < radios.length; i++) {
+            if (radios[i].checked) {
+                selected = radios[i].value;
+                selectedIndex = i;
+                break;
+            }
         }
+        const selNorm = normalizeString(selected);
+        let correct = true;
         if (Array.isArray(q.answer)) {
-            if (!q.answer.includes(selected)) allCorrect = false;
+            const answersNorm = q.answer.map(a => normalizeString(a));
+            if (!answersNorm.includes(selNorm)) correct = false;
         } else {
-            if (selected !== q.answer) allCorrect = false;
+            if (selNorm !== normalizeString(q.answer)) correct = false;
+        }
+        if (!correct) {
+            allCorrect = false;
+            wrongQuestions.push({ qIdx, selectedIndex });
         }
     });
     const feedback = document.getElementById('feedback');
     if (allCorrect) {
+        clearErrorHighlights();
         feedback.innerHTML = `<div class="success">✅ Lock opened!<br>${level.explanation}</div>`;
         setTimeout(() => { currentLevel++; renderLevel(); }, 1200);
     } else {
+        // highlight wrong question labels / all labels if none selected
+        wrongQuestions.forEach(({ qIdx, selectedIndex }) => {
+            const radios = document.getElementsByName(`mc-${qIdx}`);
+            if (selectedIndex >= 0) {
+                const lbl = document.querySelector(`label[for="mc-${qIdx}-${selectedIndex}"]`);
+                if (lbl) lbl.classList.add('error-highlight');
+            } else {
+                // no selection: highlight the question block labels
+                for (let i = 0; i < radios.length; i++) {
+                    const lbl = document.querySelector(`label[for="mc-${qIdx}-${i}"]`);
+                    if (lbl) lbl.classList.add('error-highlight');
+                }
+            }
+        });
         feedback.innerHTML = `<div class="error">❌ Try again. Check all answers.</div>`;
     }
 }
 
 function checkMatchingDrag() {
+    clearErrorHighlights();
     const level = levels[currentLevel];
     let correct = true;
     Object.entries(level.answer).forEach(([owner, expected]) => {
-        const actual = (dragState[owner] || []).slice().sort();
-        if (expected.slice().sort().join(",") !== actual.join(",")) {
+        const actual = (dragState[owner] || []).slice().map(a => normalizeString(a)).sort();
+        const exp = (expected || []).slice().map(a => normalizeString(a)).sort();
+        if (exp.join(",") !== actual.join(",")) {
             correct = false;
+            // highlight container for missing/incorrect items
+            const slotDiv = document.getElementById("slot-" + sanitizeId(owner));
+            if (slotDiv && slotDiv.parentElement) slotDiv.parentElement.classList.add('error-highlight');
+            // highlight any actual items that don't belong
+            (dragState[owner] || []).forEach(item => {
+                if (!exp.includes(normalizeString(item))) {
+                    const el = document.getElementById(`dragitem-${sanitizeId(item)}`) || findDraggableByText(item);
+                    if (el) el.classList.add('error-highlight');
+                }
+            });
         }
     });
-    if (dragState["origin"].length !== 0) correct = false;
+    if ((dragState["origin"] || []).length !== 0) {
+        correct = false;
+        (dragState["origin"] || []).forEach(item => {
+            const el = document.getElementById(`dragitem-${sanitizeId(item)}`) || findDraggableByText(item);
+            if (el) el.classList.add('error-highlight');
+        });
+        const originDiv = document.getElementById('drag-origin');
+        if (originDiv) originDiv.classList.add('error-highlight');
+    }
     const feedback = document.getElementById("feedback");
     if (correct) {
         feedback.innerHTML = `<div class="success">✅ Lock opened!<br>${level.explanation}</div>`;
@@ -750,17 +792,35 @@ function checkMatchingDrag() {
 }
 
 function checkSortingDrag() {
+    clearErrorHighlights();
     const level = levels[currentLevel];
     let correct = true;
     for (const cat of level.categories) {
-        for (const item of level.answer[cat]) {
-            if (!dragState[cat].includes(item)) correct = false;
+        const expected = (level.answer[cat] || []).map(a => normalizeString(a)).sort();
+        const actual = (dragState[cat] || []).map(a => normalizeString(a)).sort();
+        if (expected.join(',') !== actual.join(',')) {
+            correct = false;
+            // highlight misplaced items in category
+            (dragState[cat] || []).forEach(item => {
+                if (!expected.includes(normalizeString(item))) {
+                    const el = findDraggableByText(item);
+                    if (el) el.classList.add('error-highlight');
+                }
+            });
+            const container = document.getElementById('sortdrop-' + sanitizeId(cat));
+            if (container) container.classList.add('error-highlight');
         }
-        // Also check for extra items
-        if (dragState[cat].length !== level.answer[cat].length) correct = false;
     }
-    // Also check that origin is empty
-    if (dragState['origin'].length !== 0) correct = false;
+    // highlight any leftover origin items
+    if ((dragState['origin'] || []).length !== 0) {
+        correct = false;
+        (dragState['origin'] || []).forEach(item => {
+            const el = findDraggableByText(item);
+            if (el) el.classList.add('error-highlight');
+        });
+        const originDiv = document.getElementById('sort-origin');
+        if (originDiv) originDiv.classList.add('error-highlight');
+    }
 
     const feedback = document.getElementById('feedback');
     if (correct) {
@@ -772,11 +832,23 @@ function checkSortingDrag() {
 }
 
 function checkReorderSentences() {
+    clearErrorHighlights();
     const level = levels[currentLevel];
     let allCorrect = true;
     level.sentences.forEach((s, i) => {
         const assembled = (dragState['sentence-' + i] || []).join(' ').replace(/\s+/g, ' ').trim();
-        if (assembled !== s.answer) allCorrect = false;
+        const expected = (s.answer || '').toString();
+        if (assembled !== expected) {
+            const normalize = str => (str || '').replace(/’/g, "'").replace(/\s+/g, '').toLowerCase();
+            if (normalize(assembled) !== normalize(expected)) {
+                allCorrect = false;
+                // highlight sentence area and its pool
+                const slotDiv = document.getElementById('sentence-slot-' + i);
+                const originDiv = document.getElementById('origin-' + i);
+                if (slotDiv) slotDiv.classList.add('error-highlight');
+                if (originDiv) originDiv.classList.add('error-highlight');
+            }
+        }
     });
     const feedback = document.getElementById('feedback');
     if (allCorrect) {
@@ -788,13 +860,32 @@ function checkReorderSentences() {
 }
 
 function checkFillBlankDrag() {
+    clearErrorHighlights();
     const level = levels[currentLevel];
     let correct = true;
     level.blanks.forEach((b, i) => {
         const val = (dragState['blank-' + i] || [])[0] || "";
-        if (val !== b.answer) correct = false;
+        if (normalizeString(val) !== normalizeString(b.answer)) {
+            correct = false;
+            // highlight blank container
+            const containerDiv = document.getElementById('blank-' + i);
+            if (containerDiv) containerDiv.classList.add('error-highlight');
+            // highlight wrong item if it's in origin or in slot
+            if (val) {
+                const el = findDraggableByText(val);
+                if (el) el.classList.add('error-highlight');
+            }
+        }
     });
-    if ((dragState['origin'] || []).length !== 0) correct = false;
+    if ((dragState['origin'] || []).length !== 0) {
+        correct = false;
+        (dragState['origin'] || []).forEach(item => {
+            const el = findDraggableByText(item);
+            if (el) el.classList.add('error-highlight');
+        });
+        const originDiv = document.getElementById('fill-origin');
+        if (originDiv) originDiv.classList.add('error-highlight');
+    }
     const feedback = document.getElementById('feedback');
     if (correct) {
         feedback.innerHTML = `<div class="success">✅ Lock opened!<br>${level.explanation}</div>`;
@@ -826,8 +917,11 @@ function handleSortTarget(targetKey) {
             if (idx !== -1) dragState['origin'].splice(idx, 1);
          }
     } else {
-         // Source is a blank like 'blank-0'
-         dragState[sourceKey] = [];
+         // Source is a category, remove from it
+         if (dragState[sourceKey]) {
+            const idx = dragState[sourceKey].indexOf(item);
+            if (idx !== -1) dragState[sourceKey].splice(idx, 1);
+         }
     }
     
     // Add to target
@@ -835,13 +929,9 @@ function handleSortTarget(targetKey) {
         if (!dragState['origin']) dragState['origin'] = [];
         dragState['origin'].push(item);
     } else {
-        // Target is a blank. If it already has an item, move that item back to origin
-        if (dragState[targetKey] && dragState[targetKey].length > 0) {
-            const existing = dragState[targetKey][0];
-            if (!dragState['origin']) dragState['origin'] = [];
-            dragState['origin'].push(existing);
-        }
-        dragState[targetKey] = [item];
+        // Target is a category, allow multiple items
+        if (!dragState[targetKey]) dragState[targetKey] = [];
+        dragState[targetKey].push(item);
     }
     
     selectedItem = null; // Reset selection after move
@@ -920,7 +1010,9 @@ function checkAssemble() {
     // join with spaces, collapse extra spaces
     const sentence = assembled.join(" ").replace(/\s+/g, ' ').trim();
     const feedback = document.getElementById('feedback');
-    if (sentence === level.answer) {
+    // Compare normalized (compact) forms so letter-tile assemblies match compact answers
+    const expected = (level.answer || '').toString();
+    if (normalizeCompact(sentence) === normalizeCompact(expected)) {
         feedback.innerHTML = `<div class="success">✅ Lock opened!<br>${level.explanation}</div>`;
         setTimeout(() => { currentLevel++; renderLevel(); }, 1200);
     } else {
