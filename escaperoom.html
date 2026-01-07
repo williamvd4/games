@@ -287,7 +287,7 @@ const levels = [
     {
         type: "reorder_sentences",
         title: "🚪 Lock 3: Reorder Sentences – Possessive Practice",
-        scene: `Reassemble each sentence by dragging the words into the sentence box in the correct order. Start with easier sentences and progress to harder ones.`,
+        scene: `Reassemble each sentence by clicking the words in the correct order. Click a word in the sentence box to remove it.`,
         sentences: [
             { fragments: ["The", "dog", "barks", "at", "the", "cat"], answer: "The dog barks at the cat" },
             { fragments: ["The", "children's", "books", "are", "on", "the", "table"], answer: "The children's books are on the table" },
@@ -301,6 +301,7 @@ const levels = [
     {
         type: "reorder_sentences",
         title: "🚪 Lock 4: Build the Word",
+        scene: `Build the word by clicking the letter tiles in the correct order. Click a tile in the answer box to remove it.`,
         instructions: [
             "Make the plural of dog.",
             "Make the singular possessive of dog.",
@@ -389,7 +390,7 @@ const levels = [
     {
         type: "fill_blank_drag",
         title: "🚪 Lock 6: Match the Form",
-        scene: `Drag the correct form into each blank.`,
+        scene: `Click an option to select it, then click a blank to place it. Click an item in a blank to move it back to options.`,
         blanks: [
             { sentence: "The toy that belongs to one cat.<br>The ___ toy", answer: "cat" },
             { sentence: "The toys that belong to many cats.<br>The ___ toys", answer: "cats" },
@@ -405,69 +406,51 @@ const levels = [
         explanation: "Each form fits a different context: singular, plural, singular possessive, plural possessive for cat and dog."
     },
     {
-        type: "fill_blank_drag",
-        title: "🚪 Lock 7: Fix the Sentence",
-        blanks: [
-            { sentence: "The ___ shoes are new.", answer: "girls’", initial: "girls" },
-            { sentence: "The ___ backpack is blue.", answer: "girl’s", initial: "girl" },
-            { sentence: "The ___ are running.", answer: "girls", initial: "girl" },
-            { sentence: "One ___ is reading.", answer: "girl", initial: "girls" },
-            { sentence: "The ___ hats are red.", answer: "boys’", initial: "boys" },
-            { sentence: "The ___ lunch is packed.", answer: "boy’s", initial: "boy" },
-            { sentence: "The ___ are singing.", answer: "boys", initial: "boy" },
-            { sentence: "One ___ is drawing.", answer: "boy", initial: "boys" }
+        type: "sorting_drag",
+        title: "🚪 Lock 7: Sort Possessive Forms",
+        scene: `Sort the possessive forms into the correct categories by dragging them.`,
+        phrases: [
+            "dog's", "dogs'", "child's", "children's",
+            "teacher's", "teachers'", "cat's", "cats'"
         ],
-        options: ["girl", "girls", "girl’s", "girls’", "boy", "boys", "boy’s", "boys’"],
-        worksheet_task: "Write your own sentence with a plural possessive. Then, write a sentence with a singular possessive and illustrate both."
+        categories: ["Belonging to one", "Belonging to more than one"],
+        answer: {
+            "Belonging to one": ["dog's", "child's", "teacher's", "cat's"],
+            "Belonging to more than one": ["dogs'", "children's", "teachers'", "cats'"]
+        },
+        explanation: "Sort possessive forms based on whether they show ownership by one or more than one.",
+        worksheet_task: "Write two pairs of your own: a singular possessive and a plural possessive, then swap with a partner to check."
     },
     {
-        type: "multiple_choice",
-        title: "🚪 Lock 8: Spot the Error",
-        scene: "Which word is NOT a correct possessive?",
-        questions: [
-            {
-                text: "Which word is NOT a correct possessive?",
-                choices: ["cat’s", "cats’", "cats’s", "dog’s"],
-                answer: "cats’s"
-            },
-            {
-                text: "Which word is NOT a correct possessive?",
-                choices: ["dog’s", "dogs’", "dogs’s", "teacher’s"],
-                answer: "dogs’s"
-            },
-            {
-                text: "Which word is NOT a correct possessive?",
-                choices: ["child’s", "children’s", "childrens’", "dogs’"],
-                answer: "childrens’"
-            },
-            {
-                text: "Which word is NOT a correct possessive?",
-                choices: ["teacher’s", "teachers’", "teachers’s", "children’s"],
-                answer: "teachers’s"
-            },
-            {
-                text: "Which word is NOT a correct possessive?",
-                choices: ["boy’s", "boys’", "boys’s", "girls’"],
-                answer: "boys’s"
-            },
-            {
-                text: "Which word is NOT a correct possessive?",
-                choices: ["girl’s", "girls’", "girls’s", "teachers’"],
-                answer: "girls’s"
-            },
-            {
-                text: "Which word is NOT a correct possessive?",
-                choices: ["baby’s", "babies’", "babies’s", "dog’s"],
-                answer: "babies’s"
-            },
-            {
-                text: "Which word is NOT a correct possessive?",
-                choices: ["box’s", "boxes’", "boxes’s", "cat’s"],
-                answer: "boxes’s"
-            }
+        type: "reorder_sentences",
+        title: "🚪 Lock 8: Build the Word",
+        scene: `Build the word by clicking the letter tiles in the correct order. Click a tile in the answer box to remove it.`,
+        instructions: [
+            "Make the plural of dog.",
+            "Make the singular possessive of dog.",
+            "Make the plural possessive of cats.",
+            "Make the plural of box.",
+            "Make the plural of baby.",
+            "Make the singular possessive of teacher.",
+            "Make the plural possessive of children.",
+            "Make the plural of cat.",
+            "Make the singular possessive of child.",
+            "Make the plural possessive of teachers."
         ],
-        explanation: "Plural possessives typically use an apostrophe after the s (cats’). You do not write forms like cats’s.",
-        worksheet_task: "Rewrite each incorrect word correctly, then use the correct form in a sentence."
+        sentences: [
+            { fragments: ["d", "o", "g", "s", "es", "ies", "’"], answer: "d o g s" },
+            { fragments: ["d", "o", "g", "s", "es", "ies", "’"], answer: "d o g ’ s" },
+            { fragments: ["c", "a", "t", "s", "es", "ies", "’"], answer: "c a t s ’" },
+            { fragments: ["b", "o", "x", "s", "es", "ies", "’"], answer: "b o x es" },
+            { fragments: ["b", "a", "b", "y", "s", "es", "ies", "’"], answer: "b a b y ies" },
+            { fragments: ["t", "e", "a", "c", "h", "e", "r", "s", "es", "ies", "’"], answer: "t e a c h e r ’ s" },
+            { fragments: ["c", "h", "i", "l", "d", "r", "e", "n", "s", "es", "ies", "’"], answer: "c h i l d r e n ’" },
+            { fragments: ["c", "a", "t", "s", "es", "ies", "’"], answer: "c a t s" },
+            { fragments: ["c", "h", "i", "l", "d", "s", "es", "ies", "’"], answer: "c h i l d ’ s" },
+            { fragments: ["t", "e", "a", "c", "h", "e", "r", "s", "es", "ies", "’"], answer: "t e a c h e r s ’" }
+        ],
+        worksheet_task: "Build a plural possessive word.",
+        explanation: "Practice forming plurals and possessives by adding the correct endings."
     },
     {
         type: "multiple_choice",
@@ -553,11 +536,13 @@ const levels = [
 
 let currentLevel = 0;
 let dragState = {};
+let selectedItem = null; // Track selected item for 2-click interaction
 
 function renderLevel() {
     const gameDiv = document.getElementById('game');
     gameDiv.innerHTML = '';
     dragState = {}; // reset drag state for each level
+    selectedItem = null; // reset selection
 
     if (currentLevel >= levels.length) {
         gameDiv.innerHTML = `
@@ -631,14 +616,16 @@ function renderLevel() {
         dragState['origin'] = shuffle(level.phrases.slice());
         level.categories.forEach(cat => dragState[cat] = []);
 
-        html += `<div class="drag-area-flex">
-            <div class="drag-origin-full" id="sort-origin" data-key="origin" ondrop="drop(event)" ondragover="allowDrop(event)">
+        // Modified for 2-click interaction
+        html += `<div style="margin-bottom:10px; font-style:italic; color:#555;">Click an item to select it, then click a category box to move it.</div>
+        <div class="drag-area-flex">
+            <div class="drag-origin-full" id="sort-origin" onclick="handleSortTarget('origin')" style="cursor:pointer; border: 2px solid transparent;">
                 <div class="drag-origin-title">Words</div>
-                ${dragState['origin'].map(item => `<div class="draggable" draggable="true" id="sortitem-${sanitizeId(item)}" ondragstart="drag(event)">${item}</div>`).join('')}
+                <!-- Items rendered by updateDragUI -->
             </div>
             <div class="categories-row">
                 ${level.categories.map(cat => `
-                    <div class="drag-list" id="sortdrop-${sanitizeId(cat)}" data-key="${cat}" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <div class="drag-list" id="sortdrop-${sanitizeId(cat)}" onclick="handleSortTarget('${cat}')" style="cursor:pointer;">
                         <div class="drag-list-title">${cat}</div>
                         <div id="sortslot-${sanitizeId(cat)}"></div>
                     </div>
@@ -662,13 +649,13 @@ function renderLevel() {
         level.sentences.forEach((s, i) => {
             html += `
             <div style="margin-bottom:18px;">
-                <div class="drag-origin-full" id="origin-${i}" data-key="origin-${i}" ondrop="drop(event)" ondragover="allowDrop(event)">
-                    <div class="drag-origin-title">Words (Word ${i+1})</div>
-                    ${dragState['origin-' + i].map((item, idx) => `<div class="draggable" draggable="true" id="word-${i}-${idx}-${sanitizeId(item)}" ondragstart="drag(event)">${item}</div>`).join('')}
+                <div class="drag-origin-full" id="origin-${i}">
+                    <div class="drag-origin-title">Pool</div>
+                    <!-- Filled by updateDragUI -->
                 </div>
 
-                <div class="drag-list" id="sentence-${i}" data-key="sentence-${i}" ondrop="drop(event)" ondragover="allowDrop(event)" style="min-height:60px; display:flex; flex-wrap:wrap; align-items:center; min-width:200px;">
-                    <div class="drag-list-title">${level.instructions ? level.instructions[i] : 'Assemble Word ' + (i+1)}</div>
+                <div class="drag-list" id="sentence-${i}" style="min-height:60px; display:flex; flex-wrap:wrap; align-items:center; min-width:200px;">
+                    <div class="drag-list-title">${level.instructions ? level.instructions[i] : 'Assemble: ' + (i+1)}</div>
                     <div id="sentence-slot-${i}" style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;"></div>
                 </div>
             </div>
@@ -683,17 +670,26 @@ function renderLevel() {
     else if (level.type === "fill_blank_drag") {
         // Initialize dragState for each blank and origin
         dragState['origin'] = shuffle(level.options.slice());
-        level.blanks.forEach((b, i) => dragState['blank-' + i] = [b.initial]);
+        
+        // FIXED: Handle missing initial values correctly preventing undefined items
+        level.blanks.forEach((b, i) => {
+            if (b.initial) {
+                dragState['blank-' + i] = [b.initial];
+            } else {
+                dragState['blank-' + i] = [];
+            }
+        });
 
-        html += `<div class="drag-area-flex">
-            <div class="drag-origin-full" id="fill-origin" data-key="origin" ondrop="drop(event)" ondragover="allowDrop(event)">
+        html += `<div style="margin-bottom:10px; font-style:italic; color:#555;">Click an option to select it, then click a blank to place it. Click an item in a blank to move it back to options.</div>
+        <div class="drag-area-flex">
+            <div class="drag-origin-full" id="fill-origin" onclick="handleFillBlankTarget('origin')" style="cursor:pointer; border: 2px solid transparent;">
                 <div class="drag-origin-title">Options</div>
-                ${dragState['origin'].map((item, idx) => `<div class="draggable" draggable="true" id="fillopt-${idx}-${sanitizeId(item)}" ondragstart="drag(event)">${item}</div>`).join('')}
+                <!-- Items rendered by updateDragUI -->
             </div>
             <div style="width:100%;">
                 ${level.blanks.map((b, i) => `
                     <div style="margin-bottom:18px;">
-                        <span>${b.sentence.replace("___", `<span class="drag-list" id="blank-${i}" data-key="blank-${i}" ondrop="drop(event)" ondragover="allowDrop(event)" style="display:inline-block;min-width:60px;min-height:32px;vertical-align:middle;">
+                        <span>${b.sentence.replace("___", `<span class="drag-list" id="blank-${i}" onclick="handleFillBlankTarget('blank-${i}')" style="display:inline-block;min-width:60px;min-height:32px;vertical-align:middle; cursor:pointer; border-bottom: 2px solid #333;">
                             <span id="blank-slot-${i}" style="display:inline-block;vertical-align:middle;"></span>
                         </span>`)}}
                     </div>
@@ -808,6 +804,112 @@ function checkFillBlankDrag() {
     }
 }
 
+function handleSortItemClick(event, item, sourceKey) {
+    event.stopPropagation(); // Prevent prompting parent click
+    if (selectedItem && selectedItem.item === item && selectedItem.sourceKey === sourceKey) {
+        selectedItem = null; // Deselect
+    } else {
+        selectedItem = { item, sourceKey };
+    }
+    updateDragUI();
+}
+
+function handleSortTarget(targetKey) {
+    if (!selectedItem) return;
+
+    const { item, sourceKey } = selectedItem;
+    
+    // Remove from source
+    if (sourceKey === 'origin') {
+         if (dragState['origin']) {
+            const idx = dragState['origin'].indexOf(item);
+            if (idx !== -1) dragState['origin'].splice(idx, 1);
+         }
+    } else {
+         // Source is a blank like 'blank-0'
+         dragState[sourceKey] = [];
+    }
+    
+    // Add to target
+    if (targetKey === 'origin') {
+        if (!dragState['origin']) dragState['origin'] = [];
+        dragState['origin'].push(item);
+    } else {
+        // Target is a blank. If it already has an item, move that item back to origin
+        if (dragState[targetKey] && dragState[targetKey].length > 0) {
+            const existing = dragState[targetKey][0];
+            if (!dragState['origin']) dragState['origin'] = [];
+            dragState['origin'].push(existing);
+        }
+        dragState[targetKey] = [item];
+    }
+    
+    selectedItem = null; // Reset selection after move
+    updateDragUI();
+}
+
+function handleFillBlankItemClick(event, item, sourceKey) {
+    event.stopPropagation();
+    if (selectedItem && selectedItem.item === item && selectedItem.sourceKey === sourceKey) {
+        selectedItem = null;
+    } else {
+        selectedItem = { item, sourceKey };
+    }
+    updateDragUI();
+}
+
+function handleFillBlankTarget(targetKey) {
+    if (!selectedItem) return;
+
+    const { item, sourceKey } = selectedItem;
+
+    // remove from source
+    if (sourceKey === 'origin') {
+        const idx = dragState['origin'].indexOf(item);
+        if (idx !== -1) dragState['origin'].splice(idx, 1);
+    } else {
+        dragState[sourceKey] = [];
+    }
+
+    if (targetKey === 'origin') {
+        if (!dragState['origin']) dragState['origin'] = [];
+        dragState['origin'].push(item);
+    } else {
+        if (dragState[targetKey] && dragState[targetKey].length > 0) {
+            const existing = dragState[targetKey][0];
+            if (!dragState['origin']) dragState['origin'] = [];
+            dragState['origin'].push(existing);
+        }
+        dragState[targetKey] = [item];
+    }
+
+    selectedItem = null;
+    updateDragUI();
+}
+
+function moveToOrigin(item, sourceKey) {
+    if (dragState[sourceKey]) {
+        const idx = dragState[sourceKey].indexOf(item);
+        if (idx !== -1) dragState[sourceKey].splice(idx, 1);
+    }
+    if (!dragState['origin']) dragState['origin'] = [];
+    dragState['origin'].push(item);
+    updateDragUI();
+}
+
+function clickMove(sentenceIdx, wordIdx, direction) {
+    if (direction === 'toSentence') {
+        const word = dragState['origin-' + sentenceIdx][wordIdx];
+        dragState['origin-' + sentenceIdx].splice(wordIdx, 1);
+        dragState['sentence-' + sentenceIdx].push(word);
+    } else {
+        const word = dragState['sentence-' + sentenceIdx][wordIdx];
+        dragState['sentence-' + sentenceIdx].splice(wordIdx, 1);
+        dragState['origin-' + sentenceIdx].push(word);
+    }
+    updateDragUI();
+}
+
 function checkAssemble() {
     const level = levels[currentLevel];
     let assembled = [];
@@ -911,13 +1013,40 @@ function updateDragUI() {
         const originDiv = document.getElementById('sort-origin');
         if (originDiv) {
             originDiv.innerHTML = `<div class="drag-origin-title">Words</div>` +
-                (dragState['origin'] || []).map(item => `<div class="draggable" draggable="true" id="sortitem-${sanitizeId(item)}" ondragstart="drag(event)">${item}</div>`).join("");
+                (dragState['origin'] || []).map(item => {
+                    const isSelected = selectedItem && selectedItem.item === item && selectedItem.sourceKey === 'origin';
+                    const style = isSelected ? "border: 2px solid #ff7f50; background: #ffeebb;" : "";
+                    return `<div class="draggable" style="cursor:pointer; ${style}" onclick="handleSortItemClick(event, '${item.replace(/'/g, "\\'")}', 'origin')">${item}</div>`;
+                }).join("");
+            // Highlight target capability if something is selected
+            if (selectedItem && selectedItem.sourceKey !== 'origin') {
+                 originDiv.style.borderColor = "#28a745"; 
+            } else {
+                 originDiv.style.borderColor = "transparent";
+            }
         }
         levels[currentLevel].categories.forEach(cat => {
             const slotDiv = document.getElementById('sortslot-' + sanitizeId(cat));
+            const containerDiv = document.getElementById('sortdrop-' + sanitizeId(cat));
+            
             if (slotDiv) {
-                slotDiv.innerHTML = dragState[cat].map(item => `<div class="draggable" draggable="true" id="sortitem-${sanitizeId(item)}" ondragstart="drag(event)">${item}</div>`).join("");
+                slotDiv.innerHTML = dragState[cat].map(item => {
+                    const isSelected = selectedItem && selectedItem.item === item && selectedItem.sourceKey === cat;
+                    const style = isSelected ? "border: 2px solid #ff7f50; background: #ffeebb;" : "";
+                    return `<div class="draggable" style="cursor:pointer; ${style}" onclick="handleSortItemClick(event, '${item.replace(/'/g, "\\'")}', '${cat}')">${item}</div>`;
+                }).join("");
                 slotDiv.parentElement.style.minHeight = Math.max(50, 40 + 32 * (dragState[cat]?.length || 0)) + "px";
+            }
+            
+            // Highlight target container
+            if (containerDiv) {
+                if (selectedItem && selectedItem.sourceKey !== cat) {
+                    containerDiv.style.borderColor = "#28a745";
+                    containerDiv.style.backgroundColor = "#e8f5e9";
+                } else {
+                    containerDiv.style.borderColor = "rgba(15,49,89,0.3)"; // default border color from css
+                    containerDiv.style.backgroundColor = "#f9fbff"; // default bg
+                }
             }
         });
     }
@@ -927,12 +1056,18 @@ function updateDragUI() {
         level.sentences.forEach((s, i) => {
             const originDiv = document.getElementById('origin-' + i);
             if (originDiv) {
-                originDiv.innerHTML = `<div class="drag-origin-title">Words (Sentence ${i+1})</div>` +
-                    (dragState['origin-' + i] || []).map((item, idx) => `<div class="draggable" draggable="true" id="word-${i}-${idx}-${sanitizeId(item)}" ondragstart="drag(event)">${item}</div>`).join('');
+                // Render as clickable buttons moving to sentence
+                originDiv.innerHTML = `<div class="drag-origin-title">Pool</div>` +
+                    (dragState['origin-' + i] || []).map((item, idx) => 
+                        `<div class="draggable" style="cursor:pointer;" onclick="clickMove(${i}, ${idx}, 'toSentence')">${item}</div>`
+                    ).join('');
             }
             const slotDiv = document.getElementById('sentence-slot-' + i);
             if (slotDiv) {
-                slotDiv.innerHTML = (dragState['sentence-' + i] || []).map((item, idx) => `<div class="draggable" draggable="true" id="word-${i}-s${idx}-${sanitizeId(item)}" ondragstart="drag(event)">${item}</div>`).join('');
+                // Render as clickable buttons moving back to origin
+                slotDiv.innerHTML = (dragState['sentence-' + i] || []).map((item, idx) => 
+                    `<div class="draggable" style="cursor:pointer; background:#e2e6ea;" onclick="clickMove(${i}, ${idx}, 'toOrigin')">${item}</div>`
+                ).join('');
             }
         });
     }
@@ -941,15 +1076,41 @@ function updateDragUI() {
         const originDiv = document.getElementById('fill-origin');
         if (originDiv) {
             originDiv.innerHTML = `<div class="drag-origin-title">Options</div>` +
-                (dragState['origin'] || []).map((item, idx) => `<div class="draggable" draggable="true" id="fillopt-${idx}-${sanitizeId(item)}" ondragstart="drag(event)">${item}</div>`).join('');
+                (dragState['origin'] || []).map((item, idx) => {
+                    const isSelected = selectedItem && selectedItem.item === item && selectedItem.sourceKey === 'origin';
+                    const style = isSelected ? "border: 2px solid #ff7f50; background: #ffeebb;" : "";
+                    return `<div class="draggable" style="cursor:pointer; ${style}" onclick="handleFillBlankItemClick(event, '${item.replace(/'/g, "\\'")}', 'origin')">${item}</div>`;
+                }).join('');
+            
+            // Highlight origin if something from a blank is selected
+            if (selectedItem && selectedItem.sourceKey !== 'origin') {
+                 originDiv.style.borderColor = "#28a745"; 
+            } else {
+                 originDiv.style.borderColor = "transparent";
+            }
         }
         const level = levels[currentLevel];
         level.blanks.forEach((b, i) => {
             const slotDiv = document.getElementById('blank-slot-' + i);
-            if (slotDiv) {
-                slotDiv.innerHTML = (dragState['blank-' + i] || []).map(item =>
-                    `<div class="draggable" draggable="true" id="fillopt-slot-${i}-${sanitizeId(item)}" ondragstart="drag(event)">${item}</div>`
+            const containerDiv = document.getElementById('blank-' + i);
+            
+            if (slotDiv && dragState['blank-' + i] && dragState['blank-' + i].length > 0) {
+                slotDiv.innerHTML = (dragState['blank-' + i]).map(item => 
+                    `<div class="draggable" style="cursor:pointer;" onclick="moveToOrigin('${item.replace(/'/g, "\\'")}', 'blank-${i}')">${item}</div>`
                 ).join('');
+            } else if (slotDiv) {
+                slotDiv.innerHTML = '';
+            }
+            
+            // Highlight blank target
+            if (containerDiv) {
+                if (selectedItem && selectedItem.sourceKey === 'origin') {
+                    containerDiv.style.borderColor = "#28a745";
+                    containerDiv.style.backgroundColor = "#e8f5e9";
+                } else {
+                    containerDiv.style.borderColor = "rgba(15,49,89,0.3)";
+                    containerDiv.style.backgroundColor = "transparent";
+                }
             }
         });
     }

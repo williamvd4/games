@@ -1,7 +1,10 @@
 (singular, plural, singular possessive, and plural possessive)
 
 
+What would be a better way of implementing the drag and drop? The game is projected on an interactive board, but the items are difficult to move.   The students have to hold down on the item for a second before they are able to drage it.
 
+Grid/Flex Improvements: Use CSS Grid for better alignment of drag areas. Ensure touch-friendly sizes (min 44px for buttons/draggables) for mobile.
+Progress Indicator: Add a top bar showing lock progress (e.g., "Lock 3/10") with visual dots or a progress bar.
 
 ## Plan: 10 Activities on Singular, Plural, Singular Possessive, Plural Possessive
 
